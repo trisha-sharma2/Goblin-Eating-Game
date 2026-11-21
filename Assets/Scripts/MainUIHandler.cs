@@ -3,10 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 public class MainUIHandler : MonoBehaviour
 {
     private int score = 0;
@@ -18,16 +14,13 @@ public class MainUIHandler : MonoBehaviour
     public Button restartButton;
     public Button quitButton;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        UpdateTime();
+        if (!isGameOver)
+        {
+            UpdateTime();
+        }
     }
 
     public void UpdateScore(int scoreToAdd)
@@ -55,16 +48,14 @@ public class MainUIHandler : MonoBehaviour
 
     public void Quit()
     {
-        #if UNITY_EDITOR
-        EditorApplication.ExitPlaymode();
-        #endif
-
-        Application.Quit();
+        SceneManager.LoadScene("Menu");
     }
 
     public void GameOver()
     {
         isGameOver = true;
+
+        GameManager.Instance.TrySetHighScore(score, time);
 
         gameOverText.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
